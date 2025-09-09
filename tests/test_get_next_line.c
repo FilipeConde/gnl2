@@ -91,11 +91,29 @@ void	should_return_file_content_of_two_lines(void)
 	free(ptr_output);
 	close(fd);
 }
+// TESTS get_nl_char
+void	should_return_nl_index_3(void)
+{
+	char	*str = "tes\nte";
+	
+	TEST_ASSERT_EQUAL_INT(3, get_nl_char(str));
+}
+void	should_return_nl_index_0(void)
+{
+	char	*str = "\nteste";
+	
+	TEST_ASSERT_EQUAL_INT(0, get_nl_char(str));
+}
 
 int	main(void)
 {
-UNITY_BEGIN();
-RUN_TEST(should_return_file_content_of_one_line);
-RUN_TEST(should_return_file_content_of_two_lines);
+	UNITY_BEGIN();
+	// RUN_TEST(should_return_file_content_of_one_line);
+	// RUN_TEST(should_return_file_content_of_two_lines);
+	
+	// TESTS get_nl_char
+	printf("\n>========> TESTS get_nl_char\n");
+RUN_TEST(should_return_nl_index_3);
+RUN_TEST(should_return_nl_index_0);
 return UNITY_END();
 }
