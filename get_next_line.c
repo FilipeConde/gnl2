@@ -6,7 +6,7 @@
 /*   By: fconde-p <fconde-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:17:50 by fconde-p          #+#    #+#             */
-/*   Updated: 2025/09/09 22:47:09 by fconde-p         ###   ########.fr       */
+/*   Updated: 2025/09/09 23:32:24 by fconde-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ char	*get_next_line(int fd)
 	char		*buffer;
 	char		*line;
 	static char	*remain;
+	
 
 	if (!remain)
 		remain = NULL;
@@ -45,6 +46,8 @@ char	*get_next_line(int fd)
 	buffer = fill_buffer(fd);
 	line = malloc((get_nl_char(buffer) + 1) * sizeof(char));
 	ft_strlcpy(line, buffer, get_nl_char(buffer) + 2);
+	remain = malloc((ft_strlen(buffer) - ft_strlen(line) + 1) * sizeof(char));
+	ft_strlcpy(remain, (buffer + get_nl_char(buffer) + 1), ft_strlen(buffer) - ft_strlen(line) + 2);
 	free(buffer);
 	return (line);
 }
