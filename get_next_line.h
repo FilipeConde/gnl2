@@ -6,7 +6,7 @@
 /*   By: fconde-p <fconde-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:19:52 by fconde-p          #+#    #+#             */
-/*   Updated: 2025/09/09 20:27:50 by fconde-p         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:04:26 by fconde-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,8 @@
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);
 int		get_nl_char(char *str);
+size_t	ft_strlcat(char *dst, const char *src, size_t size);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 
 #endif
