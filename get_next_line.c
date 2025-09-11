@@ -6,7 +6,7 @@
 /*   By: fconde-p <fconde-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:17:50 by fconde-p          #+#    #+#             */
-/*   Updated: 2025/09/09 23:32:24 by fconde-p         ###   ########.fr       */
+/*   Updated: 2025/09/11 00:06:02 by fconde-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,35 @@ static char	*fill_buffer(int fd)
 	return (chunk);
 }
 
+void	check_remain(char *remain, char *line)
+{
+	// if *remain has '\n'
+	//   set content until '\n' to *line
+	//   set content starting from '\n' to *remain
+	// if *remain has content without '\n'
+	//   set all *remain content to *line
+	// 
+	// 
+	
+}
+
 char	*get_next_line(int fd)
 {
 	char		*buffer;
 	char		*line;
 	static char	*remain;
-	
 
+	line = NULL;
 	if (!remain)
 		remain = NULL;
-	else if (get_nl_char(remain) < 0)
-		; // copy remain until \n include to line
+	else //if (get_nl_char(remain) < 0)
+		check_remain(remain, line);
 
+	// if *line has \n
+	//   return line
+	// else
+	//   read content and concatenate at *line until '\n'
+	// return *line
 	buffer = fill_buffer(fd);
 	line = malloc((get_nl_char(buffer) + 1) * sizeof(char));
 	ft_strlcpy(line, buffer, get_nl_char(buffer) + 2);
@@ -63,15 +80,15 @@ int main(int argc, char *argv[])
 		return (0);
 	int	fd = open(argv[1], O_RDONLY);
 	i = 0;
-	// while (i < 2)
-	// {
-	// 	str = get_next_line(fd);
-	// 	printf("%s", str);
-	// 	free(str);
-	// 	i++;
-	// }
-	str = get_next_line(fd);
-	printf("%s", str);
+	while (i < 2)
+	{
+		str = get_next_line(fd);
+		printf("%s", str);
+		free(str);
+		i++;
+	}
+	// str = get_next_line(fd);
+	// printf("%s", str);
 	free(str);
 	return (0);
 }
