@@ -6,7 +6,7 @@
 /*   By: fconde-p <fconde-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:17:50 by fconde-p          #+#    #+#             */
-/*   Updated: 2025/09/11 00:06:02 by fconde-p         ###   ########.fr       */
+/*   Updated: 2025/09/12 18:32:09 by fconde-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,48 @@ static char	*fill_buffer(int fd)
 	int		bytes_read;
 
 	bytes_read = 0;
-	chunk = malloc(1);
+	chunk = malloc(sizeof(char));
+	chunk[0] = '\0';
+	// check chunk HERE
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	while (get_nl_char(buffer) < 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		ft_strlcat(chunk, buffer, ft_strlen(chunk) + bytes_read + 1);
+		if (bytes_read == 0)
+			break ;
 	}
 	if (bytes_read < BUFFER_SIZE) // Control EOF
-		;
+		ft_strlcat(chunk, buffer, ft_strlen(chunk) + bytes_read + 1);
 	return (chunk);
 }
 
 void	check_remain(char *remain, char *line)
 {
+	char	*ptr_temp;
+	int		nl_index;
+
+	nl_index = 0;
+	ptr_temp = NULL;
 	// if *remain has '\n'
 	//   set content until '\n' to *line
-	//   set content starting from '\n' to *remain
+	//   set content starting from one after '\n' to *remain
+	if (get_nl_char(remain) >= 0)
+	{
+		nl_index = get_nl_char(remain);
+		ft_strlcpy(line, remain, nl_index + 1);
+		ft_strlcpy(ptr_temp, &remain[nl_index], ft_strlen(remain) - nl_index);
+		free(remain);
+		ft_strlcpy(remain, ptr_temp, ft_strlen(ptr_temp));
+	}
 	// if *remain has content without '\n'
 	//   set all *remain content to *line
-	// 
-	// 
-	
+	else if (get_nl_char(remain) < 0)
+	{
+		line = malloc((ft_strlen(remain) + 1) * sizeof(char));
+		ft_strlcpy(line, remain, ft_strlen(remain) + 1);
+		free(remain);
+	}
 }
 
 char	*get_next_line(int fd)
@@ -61,10 +81,21 @@ char	*get_next_line(int fd)
 	//   read content and concatenate at *line until '\n'
 	// return *line
 	buffer = fill_buffer(fd);
-	line = malloc((get_nl_char(buffer) + 1) * sizeof(char));
-	ft_strlcpy(line, buffer, get_nl_char(buffer) + 2);
-	remain = malloc((ft_strlen(buffer) - ft_strlen(line) + 1) * sizeof(char));
-	ft_strlcpy(remain, (buffer + get_nl_char(buffer) + 1), ft_strlen(buffer) - ft_strlen(line) + 2);
+	// create conditional to deal with remain
+	if (remain == NULL)
+	{
+		line = malloc((get_nl_char(buffer) + 1) * sizeof(char));
+		ft_strlcpy(line, buffer, get_nl_char(buffer) + 2);
+		remain = malloc((ft_strlen(buffer) - ft_strlen(line) + 1) * sizeof(char));
+		ft_strlcpy(remain, (buffer + get_nl_char(buffer) + 1), ft_strlen(buffer) - ft_strlen(line) + 2);
+	}
+	else
+	{
+		line = malloc((get_nl_char(buffer) +
+			ft_strlen(remain) + 1) * sizeof(char));
+		line = ft_strjoin(remain, buffer);
+	}
+
 	free(buffer);
 	return (line);
 }
@@ -89,6 +120,6 @@ int main(int argc, char *argv[])
 	}
 	// str = get_next_line(fd);
 	// printf("%s", str);
-	free(str);
+	// free(str);
 	return (0);
 }
