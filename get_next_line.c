@@ -6,7 +6,7 @@
 /*   By: fconde-p <fconde-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:17:50 by fconde-p          #+#    #+#             */
-/*   Updated: 2025/09/12 18:32:09 by fconde-p         ###   ########.fr       */
+/*   Updated: 2025/09/12 19:32:35 by fconde-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static char	*fill_buffer(int fd)
 	return (chunk);
 }
 
-void	check_remain(char *remain, char *line)
+void	check_remain(char *remain, char **line)
 {
 	char	*ptr_temp;
 	int		nl_index;
@@ -48,7 +48,7 @@ void	check_remain(char *remain, char *line)
 	if (get_nl_char(remain) >= 0)
 	{
 		nl_index = get_nl_char(remain);
-		ft_strlcpy(line, remain, nl_index + 1);
+		ft_strlcpy(*line, remain, nl_index + 1);
 		ft_strlcpy(ptr_temp, &remain[nl_index], ft_strlen(remain) - nl_index);
 		free(remain);
 		ft_strlcpy(remain, ptr_temp, ft_strlen(ptr_temp));
@@ -57,8 +57,8 @@ void	check_remain(char *remain, char *line)
 	//   set all *remain content to *line
 	else if (get_nl_char(remain) < 0)
 	{
-		line = malloc((ft_strlen(remain) + 1) * sizeof(char));
-		ft_strlcpy(line, remain, ft_strlen(remain) + 1);
+		*line = malloc((ft_strlen(remain) + 1) * sizeof(char));
+		ft_strlcpy(*line, remain, ft_strlen(remain) + 1);
 		free(remain);
 	}
 }
@@ -70,18 +70,12 @@ char	*get_next_line(int fd)
 	static char	*remain;
 
 	line = NULL;
+	buffer = NULL;
 	if (!remain)
 		remain = NULL;
 	else //if (get_nl_char(remain) < 0)
-		check_remain(remain, line);
-
-	// if *line has \n
-	//   return line
-	// else
-	//   read content and concatenate at *line until '\n'
-	// return *line
+		check_remain(remain, &line);
 	buffer = fill_buffer(fd);
-	// create conditional to deal with remain
 	if (remain == NULL)
 	{
 		line = malloc((get_nl_char(buffer) + 1) * sizeof(char));
@@ -91,9 +85,9 @@ char	*get_next_line(int fd)
 	}
 	else
 	{
-		line = malloc((get_nl_char(buffer) +
-			ft_strlen(remain) + 1) * sizeof(char));
-		line = ft_strjoin(remain, buffer);
+		if (line == NULL)
+			line = malloc((get_nl_char(buffer) + ft_strlen(remain) + 1) * sizeof(char));
+		ft_strlcat(line, buffer, ft_strlen(line) + ft_strlen(buffer) + 1);
 	}
 
 	free(buffer);
@@ -111,7 +105,7 @@ int main(int argc, char *argv[])
 		return (0);
 	int	fd = open(argv[1], O_RDONLY);
 	i = 0;
-	while (i < 2)
+	while (i < 3)
 	{
 		str = get_next_line(fd);
 		printf("%s", str);
