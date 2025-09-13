@@ -6,7 +6,7 @@
 /*   By: fconde-p <fconde-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:17:50 by fconde-p          #+#    #+#             */
-/*   Updated: 2025/09/12 21:10:23 by fconde-p         ###   ########.fr       */
+/*   Updated: 2025/09/13 13:32:40 by fconde-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static char	*fill_buffer(int fd)
 	bytes_read = 0;
 	chunk = malloc(sizeof(char));
 	chunk[0] = '\0';
-	// check chunk HERE
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	while (get_nl_char(buffer) < 0)
 	{
@@ -42,9 +41,6 @@ void	check_remain(char **remain, char **line)
 
 	nl_index = 0;
 	ptr_temp = NULL;
-	// if *remain has '\n'
-	//   set content until '\n' to *line
-	//   set content starting from one after '\n' to *remain
 	if (get_nl_char(*remain) >= 0)
 	{
 		nl_index = get_nl_char(*remain);
@@ -53,8 +49,6 @@ void	check_remain(char **remain, char **line)
 		free(*remain);
 		ft_strlcpy(*remain, ptr_temp, ft_strlen(ptr_temp));
 	}
-	// if *remain has content without '\n'
-	//   set all *remain content to *line
 	else if (get_nl_char(*remain) < 0)
 	{
 		*line = malloc((ft_strlen(*remain) + 1) * sizeof(char));
@@ -101,26 +95,7 @@ char	*get_next_line(int fd)
 	else
 		check_remain(&remain, &line);
 	buffer = fill_buffer(fd);
-
 	fill_line(&remain, &line, &buffer);
-	// if (remain == NULL)
-	// {
-	// 	if (line == NULL)
-	// 		line = malloc((get_nl_char(buffer) + 1) * sizeof(char));
-	// 	ptr_tmp = ft_strjoin(line, buffer);
-	// 	free(line);
-	// 	line = ptr_tmp;
-	// 	ptr_tmp = NULL;
-	// 	remain = malloc((ft_strlen(buffer) - ft_strlen(line) + 1) * sizeof(char));
-	// 	ft_strlcpy(remain, (buffer + get_nl_char(buffer) + 1), ft_strlen(buffer) - ft_strlen(line) + 2);
-	// }
-	// else
-	// {
-	// 	if (line == NULL)
-	// 		line = malloc((get_nl_char(buffer) + ft_strlen(remain) + 1) * sizeof(char));
-	// 	ft_strlcat(line, buffer, ft_strlen(line) + ft_strlen(buffer) + 1);
-	// }
-
 	free(buffer);
 	return (line);
 }
